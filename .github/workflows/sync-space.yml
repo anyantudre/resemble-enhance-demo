@@ -1,0 +1,35 @@
+name: Sync to Hugging Face Space
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: sync-space
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install the Hugging Face CLI
+        run: pip install "huggingface_hub>=1.0"
+
+      # Uploads through the Hub API, which stores binary files (audio, images)
+      # with Xet. A plain git push to the Space rejects them.
+      - name: Upload to the Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: >
+          hf upload anyantudre/resemble-enhance-demo . .
+          --repo-type space
+          --exclude ".github/*"
+          --delete "*"
+          --commit-message "Sync from GitHub ${GITHUB_SHA::7}"
