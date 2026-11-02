@@ -1,36 +1,69 @@
 ---
-title: resemble-enhance-demo
-emoji: 📊
+title: Resemble Enhance
+emoji: 🎙️
 colorFrom: yellow
-colorTo: yellow
+colorTo: gray
 sdk: gradio
-sdk_version: 4.44.0
+sdk_version: 6.31.0
+python_version: "3.12"
 app_file: app.py
+license: mit
+short_description: Speech denoising and enhancement, running on CPU
+models:
+  - ResembleAI/resemble-enhance
 pinned: false
 ---
 
+<h1 align="center">Resemble Enhance Demo</h1>
 
-# Resemble Enhance demo: MLOps with Hugging Face Space, Gradio and Github Actions
+<p align="center">
+  <a href="https://huggingface.co/spaces/anyantudre/resemble-enhance-demo"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-yellow" alt="Hugging Face Space"></a>
+  <a href="https://github.com/anyantudre/resemble-enhance-demo/actions/workflows/sync-space.yml"><img src="https://github.com/anyantudre/resemble-enhance-demo/actions/workflows/sync-space.yml/badge.svg" alt="Sync to Space"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License"></a>
+</p>
 
-[![CI](https://github.com/ANYANTUDRE/resemble-enhance-hf-demo/actions/workflows/main.yml/badge.svg)](https://github.com/ANYANTUDRE/resemble-enhance-hf-demo/actions/workflows/main.yml)
-[![Hugging Face Space](https://img.shields.io/badge/Hugging%20Face%20%F0%9F%A4%97-Space-yellow)](https://huggingface.co/spaces/anyantudre/resemble-enhance-demo)
-[![License](https://img.shields.io/github/license/resemble-ai/Resemble-Enhance.svg)](https://github.com/resemble-ai/resemble-enhance/blob/main/LICENSE)
+A Gradio demo of [Resemble Enhance](https://github.com/resemble-ai/resemble-enhance), a speech denoising and enhancement model from Resemble AI. It runs on a free CPU Space on Hugging Face and redeploys from this repository through GitHub Actions.
 
-Demo of Resemble Enhance, an AI-powered tool that aims to improve the overall quality of speech by performing denoising and enhancement. It consists of two modules: a denoiser, which separates speech from a noisy audio, and an enhancer, which further boosts the perceptual audio quality by restoring audio distortions and extending the audio bandwidth. The two models are trained on high-quality 44.1kHz speech data that guarantees the enhancement of your speech with high quality.
+Try it at [huggingface.co/spaces/anyantudre/resemble-enhance-demo](https://huggingface.co/spaces/anyantudre/resemble-enhance-demo).
 
+![Screenshot of the demo](img/resemble-enhance.png)
 
-# Demo Space on Hugging Face 🤗
+## How it works
 
-![hf-space-demo](img/resemble-enhance.png)  
-[Try Demo Here](https://anyantudre-resemble-enhance-demo.hf.space)  
-Current version is slow... (running on CPU)
+Resemble Enhance has two models. The denoiser separates speech from background noise. The enhancer restores distortions and extends the bandwidth, so the output is 44.1 kHz speech.
 
+Upload or record a clip and the demo returns the denoised and the enhanced version. On the free CPU Space, clips are capped at 30 seconds and processing is slow. The enhancer settings (ODE solver, number of function evaluations, prior temperature) trade speed for quality.
 
-# CI/CD Workflow
-![mlops-hugging-face](https://user-images.githubusercontent.com/58792/170845235-7f00d61c-ea36-4d28-82d0-3a9b8c0f1769.png)
+## Run it locally
 
+Requires Python 3.10 or newer.
 
+```bash
+git clone https://github.com/anyantudre/resemble-enhance-demo.git
+cd resemble-enhance-demo
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
+```
 
-## References
-- [Resemble Enhance GitHub](https://github.com/resemble-ai/resemble-enhance)
-- [YouTube MLOps with Hugging Face Spaces, Gradio and Github Actions](https://youtu.be/VYSGjUa5sc4)
+The model weights (about 700 MB) download from [ResembleAI/resemble-enhance](https://huggingface.co/ResembleAI/resemble-enhance) on the first start. `requirements.txt` installs the CPU build of PyTorch. For a GPU, install a CUDA build of `torch` and `torchaudio` 2.8.0 first. Add `--unlimited` to accept clips of any length.
+
+To process a folder of files from the command line:
+
+```bash
+python -m resemble_enhance.enhancer in_dir out_dir --device cpu
+python -m resemble_enhance.enhancer in_dir out_dir --device cpu --denoise_only
+```
+
+## Deployment
+
+[`.github/workflows/sync-space.yml`](.github/workflows/sync-space.yml) uploads the repository to the Space on every push to `main`. It needs an `HF_TOKEN` repository secret: a Hugging Face access token with write access to the Space.
+
+## Training
+
+Training needs a CUDA GPU and DeepSpeed. Install the extra dependencies with `pip install -r requirements-train.txt`, then follow [Usage.md](Usage.md), which keeps the upstream training guide.
+
+## Credits
+
+The model, weights and the `resemble_enhance` package are by [Resemble AI](https://www.resemble.ai/enhance/), released under the MIT License. This repository vendors the package from [resemble-ai/resemble-enhance](https://github.com/resemble-ai/resemble-enhance) (commit `d20c372`) with one change: the inference code does not import DeepSpeed, so the demo runs without it.
