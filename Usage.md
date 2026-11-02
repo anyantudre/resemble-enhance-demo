@@ -55,6 +55,12 @@ data
 
 ### Training
 
+Install the training dependencies first (they need a CUDA build of PyTorch):
+
+```bash
+pip install -r requirements-train.txt
+```
+
 #### Denoiser Warmup
 
 Though the denoiser is trained jointly with the enhancer, it is recommended for a warmup training first.

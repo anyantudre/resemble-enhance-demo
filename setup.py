@@ -31,7 +31,8 @@ with open("README.md", "r") as f:
 
 
 with open("requirements.txt", "r") as f:
-    requirements = f.read().splitlines()
+    # Skip comments and pip options such as --extra-index-url.
+    requirements = [line for line in f.read().splitlines() if line and not line.startswith(("#", "-"))]
 
 setup(
     name="resemble-enhance",

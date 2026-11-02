@@ -1,0 +1,8 @@
+# Extra dependencies for training. Install a CUDA build of torch and
+# torchaudio 2.8.0 first: training does not run on CPU.
+-r requirements.txt
+celluloid>=0.2.0
+deepspeed>=0.12.4
+librosa>=0.10.1
+ptflops>=0.7.1.2
+resampy>=0.4.2
