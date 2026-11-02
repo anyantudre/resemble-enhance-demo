@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import json
 import logging
 import time
 from dataclasses import KW_ONLY, dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 import torch
 from torch import Tensor
@@ -11,8 +13,10 @@ from torch.utils.data import DataLoader
 
 from .control import non_blocking_input
 from .distributed import is_global_leader
-from .engine import Engine
 from .utils import tree_map
+
+if TYPE_CHECKING:
+    from .engine import Engine
 
 logger = logging.getLogger(__name__)
 
