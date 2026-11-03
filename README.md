@@ -32,7 +32,7 @@ Try it at [huggingface.co/spaces/anyantudre/resemble-enhance-demo](https://huggi
 
 Resemble Enhance has two models. The denoiser separates speech from background noise. The enhancer restores distortions and extends the bandwidth, so the output is 44.1 kHz speech.
 
-Upload or record a clip and the demo returns the denoised and the enhanced version. On the free CPU Space, clips are capped at 30 seconds and processing is slow. The enhancer settings (ODE solver, number of function evaluations, prior temperature) trade speed for quality.
+Upload or record a clip and the demo returns the denoised and the enhanced version. On the free CPU Space, clips are capped at 30 seconds. With the default 16 solver steps, a 10 second clip takes about two minutes. The enhancer settings (ODE solver, number of function evaluations, prior temperature) trade speed for quality: fewer steps run faster.
 
 ## Run it locally
 

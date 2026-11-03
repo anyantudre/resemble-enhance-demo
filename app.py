@@ -64,7 +64,8 @@ def build_demo(max_seconds: int | None) -> gr.Blocks:
                     nfe = gr.Slider(
                         minimum=1,
                         maximum=128,
-                        value=32 if DEVICE == "cpu" else 64,
+                        # On the free CPU each step adds about 5 s per 10 s of audio.
+                        value=16 if DEVICE == "cpu" else 64,
                         step=1,
                         label="Function evaluations (higher is usually better but slower)",
                     )
